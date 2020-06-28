@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ContractsSearchClientImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">claro-post-documentosSaldoReclamo-integration-one</a> &gt; <a href="index.source.html" class="el_package">pe.com.claro.post.documentosSaldoReclamo.one.integration.client.impl</a> &gt; <span class="el_source">ContractsSearchClientImpl.java</span></div><h1>ContractsSearchClientImpl.java</h1><pre class="source lang-java linenums">package pe.com.claro.post.documentosSaldoReclamo.one.integration.client.impl;
+
+import javax.ejb.Stateless;
+import javax.xml.ws.BindingProvider;
+
+import org.apache.log4j.Logger;
+
+import com.ericsson.services.ws_cil_7.ContractsSearchService;
+import com.ericsson.services.ws_cil_7.ContractsSearchServiceSoap11QSService;
+import com.ericsson.services.ws_cil_7.contractssearch.ContractsSearchRequest;
+import com.ericsson.services.ws_cil_7.contractssearch.ContractsSearchResponse;
+
+import pe.com.claro.common.exception.WSException;
+import pe.com.claro.common.property.JAXBUtilitarios;
+import pe.com.claro.common.property.PropertiesExternos;
+import pe.com.claro.post.documentosSaldoReclamo.one.canonical.request.HeaderRequest;
+import pe.com.claro.post.documentosSaldoReclamo.one.integration.client.ContractsSearchClient;
+
+@Stateless
+<span class="nc" id="L20">public class ContractsSearchClientImpl implements ContractsSearchClient {</span>
+
+<span class="nc" id="L22">    private static final Logger logger = Logger.getLogger(ContractsSearchClientImpl.class);</span>
+
+    @Override
+    public ContractsSearchResponse contractsSearch(HeaderRequest headerRequest,
+            ContractsSearchRequest request, PropertiesExternos propExt) throws WSException {
+        // TODO Auto-generated method stub
+<span class="nc" id="L28">        String metodo = &quot;ContractsSearch&quot;;</span>
+<span class="nc" id="L29">        long tiempoInicio = System.currentTimeMillis();</span>
+<span class="nc" id="L30">        ContractsSearchResponse response = new ContractsSearchResponse();</span>
+<span class="nc" id="L31">        logger.info(&quot; INICIO METODO: &quot; + metodo);</span>
+        try {
+<span class="nc" id="L33">            logger.info(&quot;Invocando Servicio: &quot; + propExt.wsContractsSearchNombre + &quot;, Metodo: &quot;</span>
+                    + propExt.wsContractsSearchMetodo);
+<span class="nc" id="L35">            logger.info(&quot; URL del Servicio a invocar: &quot; + propExt.wsContractsSearchWsdl);</span>
+<span class="nc" id="L36">            logger.info(&quot; Datos de Entrada: &quot; + JAXBUtilitarios.anyObjectToXmlText(request));</span>
+
+<span class="nc" id="L38">            ContractsSearchServiceSoap11QSService contractsSearchServiceSoap11QSService = new ContractsSearchServiceSoap11QSService();</span>
+
+<span class="nc" id="L40">            ContractsSearchService port = contractsSearchServiceSoap11QSService.getContractsSearchServiceSoap11QSPort();</span>
+
+<span class="nc" id="L42">            BindingProvider bindingProvider = (BindingProvider) port;</span>
+<span class="nc" id="L43">            bindingProvider.getRequestContext().put(&quot;javax.xml.ws.service.endpoint.address&quot;,</span>
+                    propExt.wsContractsSearchWsdl);
+<span class="nc" id="L45">            bindingProvider.getRequestContext().put(&quot;com.sun.xml.internal.ws.connect.timeout&quot;,</span>
+<span class="nc" id="L46">                    Integer.valueOf(propExt.wsContractsSearchTimeoutConnect));</span>
+<span class="nc" id="L47">            bindingProvider.getRequestContext().put(&quot;com.sun.xml.internal.ws.request.timeout&quot;,</span>
+<span class="nc" id="L48">                    Integer.valueOf(propExt.wsContractsSearchTimeoutRequest));</span>
+<span class="nc" id="L49">            response = port.contractsSearch(request);</span>
+
+<span class="nc bnc" id="L51" title="All 4 branches missed.">            if (null == response.getContracts() || response.getContracts().getItem().size() == 0)</span>
+<span class="nc" id="L52">                throw new WSException(propExt.idt2Codigo, String.format(propExt.idt2Mensaje,</span>
+                        new Object[] { propExt.wsContractsSearchNombre, propExt.wsContractsSearchMetodo }));
+<span class="nc" id="L54">            logger.info(&quot; Datos de Salida: &quot; + JAXBUtilitarios.anyObjectToXmlText(response));</span>
+<span class="nc" id="L55">        } catch (Exception e) {</span>
+<span class="nc" id="L56">            logger.error(e, e);</span>
+<span class="nc" id="L57">            String error = e + &quot;&quot;;</span>
+<span class="nc bnc" id="L58" title="All 2 branches missed.">            if (error.contains(&quot;Timeout&quot;))</span>
+<span class="nc" id="L59">                throw new WSException(propExt.idt1Codigo, String.format(propExt.idt1Mensaje,</span>
+                        new Object[] { propExt.wsContractsSearchNombre, propExt.wsContractsSearchMetodo }), e);
+<span class="nc" id="L61">            throw new WSException(propExt.idt2Codigo, String.format(propExt.idt2Mensaje,</span>
+                    new Object[] { propExt.wsContractsSearchNombre, propExt.wsContractsSearchMetodo }), e);
+        } finally {
+<span class="nc" id="L64">            logger.info(&quot; INICIO METODO: &quot; + metodo);</span>
+<span class="nc" id="L65">            logger.info(&quot;Tiempo total de proceso (ms): &quot; + (System.currentTimeMillis() - tiempoInicio)</span>
+                    + &quot; milisegundos.&quot;);
+        }
+<span class="nc" id="L68">        return response;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

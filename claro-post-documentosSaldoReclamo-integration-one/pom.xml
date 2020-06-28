@@ -1,0 +1,134 @@
+<?xml version="1.0"?>
+<project
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+  xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>claro-post-documentosSaldoReclamo-integration-one</artifactId>
+  <packaging>jar</packaging>
+  <name>claro-post-documentosSaldoReclamo-integration-one</name>
+
+  <parent>
+    <groupId>pe.com.claro</groupId>
+    <artifactId>claro-post-documentosSaldoReclamo-one</artifactId>
+    <version>1.0.0</version>
+  </parent>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <spring.version>3.1.0.RELEASE</spring.version>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>2.18.3</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.8.5</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.jersey</groupId>
+      <artifactId>jersey-client</artifactId>
+      <version>1.9.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.9.0</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>pe.com.claro</groupId>
+      <artifactId>claro-rest-api-client</artifactId>
+      <version>2.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>pe.com.claro</groupId>
+      <artifactId>
+				claro-post-documentosSaldoReclamo-canonical-one
+			</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>pe.com.claro.eai</groupId>
+      <artifactId>ConsultaFacturas-Client</artifactId>
+      <version>1.0</version>
+<!--       <scope>system</scope> -->
+<!--       <systemPath>${project.basedir}/lib/pe/com/claro/eai/ConsultaFacturas-Client/1.0/ConsultaFacturas-Client-1.0.jar</systemPath> -->
+    </dependency>
+    <dependency>
+      <groupId>pe.com.claro.eai</groupId>
+      <artifactId>ebsReclamosPostpagoService-Client</artifactId>
+      <version>1.0</version>
+<!--       <scope>system</scope> -->
+<!--       <systemPath>${project.basedir}/lib/pe/com/claro/eai/ebsReclamosPostpagoService-Client/1.0/ebsReclamosPostpagoService-Client-1.0.jar</systemPath> -->
+    </dependency>
+    <dependency>
+      <groupId>pe.com.claro.eai</groupId>
+      <artifactId>ConsultaLineaCuentaWSService-Client</artifactId>
+      <version>1.0.0</version>
+<!--       <scope>system</scope> -->
+<!--       <systemPath>${project.basedir}/lib/pe/com/claro/eai/ConsultaLineaCuentaWSService-Client/1.0.0/ConsultaLineaCuentaWSService-Client-1.0.0.jar</systemPath> -->
+    </dependency>
+    <dependency>
+      <groupId>pe.com.claro.eai</groupId>
+      <artifactId>claro-post-categoriafactura-Client</artifactId>
+      <version>1.0.0</version>
+<!--       <scope>system</scope> -->
+<!--       <systemPath>${project.basedir}/lib/pe/com/claro/eai/claro-post-categoriafactura-Client/1.0.0/claro-post-categoriafactura-Client-1.0.0.jar</systemPath> -->
+    </dependency>
+    <dependency>
+      <groupId>pe.com.claro.eai</groupId>
+      <artifactId>contracts-search-service</artifactId>
+      <version>1.0.0</version>
+<!--       <scope>system</scope> -->
+<!--       <systemPath>${project.basedir}/lib/pe/com/claro/eai/contracts-search-service/1.0.0/contracts-search-service-1.0.0.jar</systemPath> -->
+    </dependency>
+    <dependency>
+      <groupId>pe.com.claro.eai</groupId>
+      <artifactId>claro-post-factura-client</artifactId>
+      <version>1.0.0</version>
+<!--       <scope>system</scope> -->
+<!--       <systemPath>${project.basedir}/lib/pe/com/claro/eai/claro-post-factura-client/1.0.0/claro-post-factura-client-1.0.0.jar</systemPath> -->
+    </dependency>
+
+    <!-- dependencias spring -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-web</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-jdbc</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-jms</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+
+  </dependencies>
+
+</project>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReclamoPostpagoServiceWSImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">claro-post-documentosSaldoReclamo-integration</a> &gt; <a href="index.source.html" class="el_package">pe.com.claro.post.documentosSaldoReclamo.integration.client.impl</a> &gt; <span class="el_source">ReclamoPostpagoServiceWSImpl.java</span></div><h1>ReclamoPostpagoServiceWSImpl.java</h1><pre class="source lang-java linenums">/**
+ * 
+ */
+package pe.com.claro.post.documentosSaldoReclamo.integration.client.impl;
+
+import javax.ejb.Stateless;
+import javax.xml.ws.BindingProvider;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import pe.com.claro.common.property.Constantes;
+import pe.com.claro.common.property.JAXBUtilitarios;
+import pe.com.claro.common.property.PropertiesExternos;
+import pe.com.claro.esb.services.reclamopostpago.ws.EbsReclamosPostpago;
+import pe.com.claro.esb.services.reclamopostpago.ws.EbsReclamosPostpagoService;
+import pe.com.claro.esb.services.schemas.reclamopostpago.ValidacionReciboRequest;
+import pe.com.claro.esb.services.schemas.reclamopostpago.ValidacionReciboResponse;
+import pe.com.claro.post.documentosSaldoReclamo.integration.client.ReclamoPostpagoServiceWS;
+
+/**
+ * @author everis
+ *
+ */
+
+@Stateless
+<span class="nc" id="L27">public class ReclamoPostpagoServiceWSImpl implements ReclamoPostpagoServiceWS {</span>
+
+<span class="nc" id="L29">	private static final Logger LOG = LoggerFactory.getLogger(ReclamoPostpagoServiceWSImpl.class);</span>
+
+	@Override
+	public ValidacionReciboResponse validarRecibo(ValidacionReciboRequest request, PropertiesExternos properties) {
+<span class="nc" id="L33">		ValidacionReciboResponse response = new ValidacionReciboResponse();</span>
+
+<span class="nc" id="L35">		LOG.info(&quot; Se invoca: &quot; + properties.getReclamoPostpagoWsValidarReciboEndpointUrl());</span>
+<span class="nc" id="L36">		EbsReclamosPostpagoService service = new EbsReclamosPostpagoService();</span>
+<span class="nc" id="L37">		EbsReclamosPostpago port = service.getEbsReclamosPostpagoSoapPort();</span>
+<span class="nc" id="L38">		BindingProvider bindingProvider = (BindingProvider) port;</span>
+<span class="nc" id="L39">		bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,</span>
+<span class="nc" id="L40">				properties.getReclamoPostpagoWsValidarReciboEndpointUrl());</span>
+<span class="nc" id="L41">		LOG.info(&quot; Tiempo de Timeout de Conexion: &quot; + properties.getReclamoPostpagoWsValidarReciboConexionTimeout());</span>
+<span class="nc" id="L42">		bindingProvider.getRequestContext().put(&quot;com.sun.xml.ws.connect.timeout&quot;,</span>
+<span class="nc" id="L43">				Integer.parseInt(properties.getReclamoPostpagoWsValidarReciboConexionTimeout()));</span>
+<span class="nc" id="L44">		LOG.info(&quot; Tiempo de Timeout de Ejecucion: &quot; + properties.getReclamoPostpagoWsValidarReciboExecutionTimeout());</span>
+<span class="nc" id="L45">		bindingProvider.getRequestContext().put(&quot;com.sun.xml.ws.request.timeout&quot;,</span>
+<span class="nc" id="L46">				Integer.parseInt(properties.getReclamoPostpagoWsValidarReciboExecutionTimeout()));</span>
+<span class="nc" id="L47">		LOG.info(Constantes.DATOS_ENTRADA + JAXBUtilitarios.anyObjectToXmlText(request));</span>
+<span class="nc" id="L48">		response = port.validarRecibo(request);</span>
+<span class="nc" id="L49">		LOG.info(Constantes.DATOS_SALIDA + JAXBUtilitarios.anyObjectToXmlText(response));</span>
+<span class="nc" id="L50">		return response;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

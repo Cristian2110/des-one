@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PostFacturaImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">claro-post-documentosSaldoReclamo-integration-one</a> &gt; <a href="index.source.html" class="el_package">pe.com.claro.post.documentosSaldoReclamo.one.integration.client.impl</a> &gt; <span class="el_source">PostFacturaImpl.java</span></div><h1>PostFacturaImpl.java</h1><pre class="source lang-java linenums">package pe.com.claro.post.documentosSaldoReclamo.one.integration.client.impl;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import javax.ejb.Stateless;
+import javax.ws.rs.HttpMethod;
+import javax.ws.rs.core.MediaType;
+
+import org.apache.log4j.Logger;
+
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource.Builder;
+import com.sun.jersey.api.client.config.ClientConfig;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
+
+import pe.com.claro.common.exception.WSException;
+import pe.com.claro.common.property.Constantes;
+import pe.com.claro.common.property.JAXBUtilitarios;
+import pe.com.claro.common.property.PropertiesExternos;
+import pe.com.claro.post.documentosSaldoReclamo.one.canonical.request.HeaderRequest;
+import pe.com.claro.post.documentosSaldoReclamo.one.integration.client.PostFactura;
+import pe.com.claro.post.factura.canonical.request.ListarDocReferenciaRequestType;
+import pe.com.claro.post.factura.canonical.response.ListarDocReferenciaResponseType;
+
+@Stateless
+<span class="nc" id="L27">public class PostFacturaImpl implements PostFactura {</span>
+
+<span class="nc" id="L29">  private static transient Logger logger = Logger.getLogger(PostFacturaImpl.class);</span>
+
+  @Override
+  public ListarDocReferenciaResponseType listarDocReferencia(HeaderRequest header,
+      ListarDocReferenciaRequestType request, PropertiesExternos p) throws WSException {
+
+<span class="nc" id="L35">    logger.info(&quot;[INICIO metodo listarDocReferencia]&quot;);</span>
+<span class="nc" id="L36">    long tiempoInicio = System.currentTimeMillis();</span>
+<span class="nc" id="L37">    ListarDocReferenciaResponseType response = new ListarDocReferenciaResponseType();</span>
+
+    try {
+<span class="nc" id="L40">      logger.info(&quot; URL: &quot; + p.wsFacturaURL);</span>
+<span class="nc" id="L41">      logger.info(&quot; Timeout Connect: &quot; + p.wsFacturaTimeoutConnection);</span>
+<span class="nc" id="L42">      logger.info(&quot; Timeout Request: &quot; + p.wsFacturaTimeoutRequest);</span>
+<span class="nc" id="L43">      logger.info(&quot; Datos Request: &quot; + JAXBUtilitarios.anyObjectToXmlText(request));</span>
+<span class="nc" id="L44">      logger.info(&quot; Datos Header: &quot; + JAXBUtilitarios.anyObjectToXmlText(header));</span>
+<span class="nc" id="L45">      ClientConfig clientConfig = new DefaultClientConfig();</span>
+<span class="nc" id="L46">      clientConfig.getProperties().put(ClientConfig.PROPERTY_CONNECT_TIMEOUT,</span>
+<span class="nc" id="L47">          Integer.parseInt(p.wsFacturaTimeoutConnection));</span>
+<span class="nc" id="L48">      clientConfig.getProperties().put(ClientConfig.PROPERTY_READ_TIMEOUT, Integer.parseInt(p.wsFacturaTimeoutRequest));</span>
+<span class="nc" id="L49">      Client client = Client.create(clientConfig);</span>
+
+<span class="nc" id="L51">      Builder builder = client.resource(p.wsFacturaURL).type(MediaType.APPLICATION_JSON);</span>
+<span class="nc" id="L52">      builder.header(&quot;idTransaccion&quot;, header.getIdTransaccion());</span>
+<span class="nc" id="L53">      builder.header(&quot;msgid&quot;, header.getMsgid());</span>
+<span class="nc" id="L54">      builder.header(&quot;timestamp&quot;, new SimpleDateFormat(&quot;yyyy-MM-dd'T'HH:mm:ss'Z'&quot;).format(new Date()));</span>
+<span class="nc" id="L55">      builder.header(&quot;userId&quot;, header.getUserId());</span>
+<span class="nc" id="L56">      builder.header(&quot;accept&quot;, MediaType.APPLICATION_JSON);</span>
+
+<span class="nc" id="L58">      response = builder.method(HttpMethod.POST, ListarDocReferenciaResponseType.class, request);</span>
+
+<span class="nc" id="L60">      logger.info(&quot; Datos Response: &quot; + JAXBUtilitarios.anyObjectToXmlText(response));</span>
+
+<span class="nc" id="L62">    } catch (Exception e) {</span>
+<span class="nc" id="L63">      logger.error(e, e);</span>
+<span class="nc" id="L64">      String error = (e + Constantes.TXT_VACIO);</span>
+<span class="nc bnc" id="L65" title="All 2 branches missed.">      if (error.contains(Constantes.TIMEOUT)) {</span>
+<span class="nc" id="L66">        throw new WSException(p.idt1Codigo,</span>
+<span class="nc" id="L67">            String.format(p.idt1Mensaje, p.wsFacturaNombreServicio, p.wsFacturaNombreMetodo), e);</span>
+      } else {
+<span class="nc" id="L69">        throw new WSException(p.idt2Codigo,</span>
+<span class="nc" id="L70">            String.format(p.idt2Mensaje, p.wsFacturaNombreServicio, p.wsFacturaNombreMetodo), e);</span>
+      }
+    } finally {
+<span class="nc" id="L73">      logger.info(</span>
+<span class="nc" id="L74">          String.format(&quot; Tiempo total de proceso (ms): %s milisegundos&quot;, (System.currentTimeMillis() - tiempoInicio)));</span>
+<span class="nc" id="L75">      logger.info(&quot;[FIN metodo listarDocReferencia]&quot;);</span>
+    }
+<span class="nc" id="L77">    return response;</span>
+
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FacturaClientImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">claro-post-documentosSaldoReclamo-integration-one</a> &gt; <a href="index.source.html" class="el_package">pe.com.claro.post.documentosSaldoReclamo.one.integration.client.impl</a> &gt; <span class="el_source">FacturaClientImpl.java</span></div><h1>FacturaClientImpl.java</h1><pre class="source lang-java linenums">package pe.com.claro.post.documentosSaldoReclamo.one.integration.client.impl;
+
+import javax.ejb.Stateless;
+import javax.ws.rs.core.MediaType;
+import org.apache.log4j.Logger;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
+import pe.com.claro.common.exception.WSException;
+import pe.com.claro.common.property.Constantes;
+import pe.com.claro.common.property.PropertiesExternos;
+import pe.com.claro.post.documentosSaldoReclamo.one.canonical.request.HeaderRequest;
+import pe.com.claro.post.documentosSaldoReclamo.one.integration.client.FacturaClient;
+import pe.com.claro.post.factura.canonical.request.ListarDocReferenciaRequestType;
+import pe.com.claro.post.factura.canonical.response.ListarDocReferenciaResponseType;
+
+@Stateless
+<span class="nc" id="L20">public class FacturaClientImpl implements FacturaClient {</span>
+  
+<span class="nc" id="L22">  private static transient Logger logger = Logger.getLogger(FacturaClientImpl.class);</span>
+  
+  @Override
+  public ListarDocReferenciaResponseType obtenerFactura(HeaderRequest header, ListarDocReferenciaRequestType request,PropertiesExternos p) throws WSException {
+<span class="nc" id="L26">    long tiempoInicio = System.currentTimeMillis();</span>
+<span class="nc" id="L27">    logger.info(&quot;[INICIO metodo obtenerFactura]&quot;);</span>
+<span class="nc" id="L28">    ListarDocReferenciaResponseType response = new ListarDocReferenciaResponseType();</span>
+<span class="nc" id="L29">    String url = p.getObtenerFacturaEndpointUrlBasePath() + p.getObtenerFacturaMetodo();</span>
+<span class="nc" id="L30">    String nombreComponente = p.getObtenerFacturaNombre();</span>
+<span class="nc" id="L31">    String nombreMetodo = p.getObtenerFacturaMetodo();</span>
+<span class="nc" id="L32">    Gson gsonReq = new Gson();</span>
+<span class="nc" id="L33">    Gson prettyGson = new GsonBuilder().setPrettyPrinting().create();</span>
+<span class="nc" id="L34">    String jsonPayload=Constantes.VACIO;</span>
+    try {
+<span class="nc" id="L36">      logger.info(&quot;Componente: &quot; + nombreComponente+&quot;, Metodo: &quot; + nombreMetodo);</span>
+<span class="nc" id="L37">      logger.info(&quot;URL: &quot; + url+&quot;, ConexionTimeout: &quot;+p.getObtenerFacturaConexionTimeout()+&quot;, ExecutionTimeout : &quot;+p.getObtenerFacturaExecutionTimeout());</span>
+<span class="nc" id="L38">      logger.info(&quot;Request Header: &quot; +prettyGson.toJson(header));</span>
+<span class="nc" id="L39">      logger.info(&quot;Request Body: &quot; +prettyGson.toJson(request));</span>
+<span class="nc" id="L40">      Client client = Client.create();</span>
+<span class="nc" id="L41">      client.setConnectTimeout(Integer.valueOf(p.getObtenerCategoriaConexionTimeout()));</span>
+<span class="nc" id="L42">      client.setReadTimeout(Integer.valueOf(p.getObtenerCategoriaExecutionTimeout()));</span>
+<span class="nc" id="L43">      WebResource webResource = client.resource(url);</span>
+<span class="nc" id="L44">      ClientResponse responseClient = webResource</span>
+<span class="nc" id="L45">          .accept(MediaType.APPLICATION_JSON)</span>
+<span class="nc" id="L46">          .type(MediaType.APPLICATION_JSON)</span>
+<span class="nc" id="L47">          .header(Constantes.ID_TRANSACCION,header.getIdTransaccion())</span>
+<span class="nc" id="L48">          .header(Constantes.MSGID,header.getMsgid())</span>
+<span class="nc" id="L49">          .header(Constantes.TIMES_TAMP,header.getTimestamp())</span>
+<span class="nc" id="L50">          .header(Constantes.USERID,header.getUserId())</span>
+<span class="nc" id="L51">          .post(ClientResponse.class,gsonReq.toJson(request));</span>
+<span class="nc" id="L52">      logger.info(&quot;Status: &quot;+responseClient.getStatus());</span>
+<span class="nc" id="L53">      jsonPayload=responseClient.getEntity(String.class);</span>
+<span class="nc bnc" id="L54" title="All 2 branches missed.">      if(responseClient.getStatus()!=200){</span>
+<span class="nc" id="L55">        logger.info(&quot;jsonPayload : &quot;+jsonPayload);</span>
+<span class="nc" id="L56">        throw new WSException(p.idt2Codigo,jsonPayload);</span>
+      }else{
+<span class="nc" id="L58">        response = gsonReq.fromJson(jsonPayload,ListarDocReferenciaResponseType.class);</span>
+<span class="nc" id="L59">        logger.info(&quot;Response Body: &quot; + prettyGson.toJson(response));</span>
+      }
+<span class="nc" id="L61">    } catch (Exception e) {</span>
+<span class="nc" id="L62">      logger.error(e, e);</span>
+<span class="nc" id="L63">      String error = (e + Constantes.VACIO);</span>
+<span class="nc bnc" id="L64" title="All 2 branches missed.">      if (error.contains(Constantes.TIMEOUT)) {</span>
+<span class="nc" id="L65">        throw new WSException(p.idt1Codigo,String.format(p.idt1Mensaje,url,p.obtenerFacturaMetodo).concat(e+Constantes.VACIO), e);</span>
+      } else {
+<span class="nc" id="L67">        throw new WSException(p.idt2Codigo,String.format(p.idt2Mensaje,url,p.obtenerFacturaMetodo).concat(e+Constantes.VACIO), e);</span>
+      }
+    } finally {
+<span class="nc" id="L70">      logger.info(&quot;[FIN metodo obtenerFactura]&quot;);</span>
+<span class="nc" id="L71">      logger.info(&quot; Tiempo total de proceso (ms): &quot; + (System.currentTimeMillis() - tiempoInicio) + &quot; milisegundos&quot;);</span>
+    }
+<span class="nc" id="L73">    return response;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
